@@ -1,0 +1,45 @@
+*{
+    /* background-: grey ; */
+}
+/* Hero.css */
+.hero-container {
+    background-image: url('/path-to-your-image.jpg'); /* Replace with your actual image path */
+    background-size: cover; /* Ensures the image covers the entire container */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    min-height: 100vh; /* Makes the container take up the full viewport height */
+    display: flex; /* For content alignment */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.hero-text {
+    color: white; /* Ensure text is visible on the image */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Adds shadow for better readability */
+}
+
+.logo1{
+    display: flex;
+    align-items: center;
+    margin-right: 56px;
+    gap: 9px;
+    flex-direction: column;
+   
+}
+.h1{
+    font-weight: bolder;
+ font-size: 40px;
+ text-align: center;
+ margin-top: 16px;
+}
+.k{
+color: #f56551;
+}
+.p{
+    font-weight: 500;
+    text-align: center;
+    justify-content: center;
+    color: grey;
+}

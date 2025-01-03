@@ -1,0 +1,25 @@
+.z{
+border: solid;
+}
+.input1{
+    width: 500px;
+    height: 30px;
+    margin-bottom: 10px;
+}
+.travel {
+    margin-left: 200px;
+    justify-content: center;
+    align-items: center;
+}
+.space{
+    width: 400px;
+    height: 200px;
+}
+.button1{
+    margin-right: 200px;
+}
+/* In index.css or your stylesheet */
+.bg-custom {
+    background: linear-gradient(red); /* Example gradient */
+  }
+  
