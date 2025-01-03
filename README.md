@@ -28,29 +28,30 @@ The AI Travel Planner App is a personalized travel planning application built us
    ```bash
    git clone https://github.com/your-username/ai-travel-planner-app.git
 2.```bash
-cd ai-travel-planner-app ```bash 
-###  npm install ```bash
+cd ai-travel-planner-app ```bash
+3. ```bash 
+npm install
 ###  Usage
-###  On the homepage, enter your location, available days for the trip, and your budget.
-###  Click "Generate Plan" to receive a personalized travel itinerary.
-###  Review the suggested destinations and experiences, and adjust your inputs to refine your travel plan.
+- On the homepage, enter your location, available days for the trip, and your budget.
+- Click "Generate Plan" to receive a personalized travel itinerary.
+- Please look over the suggested destinations and experiences, and adjust your inputs to refine your travel plan.
 
 
 ### Challenges Faced
-### Building Gemini API Prompt: Crafting a well-structured prompt to ensure the Gemini API generates accurate and relevant travel recommendations based on user inputs.
-### Location Images: Implementing a photo gallery for each location proved challenging due to the unique nature of each destination.
-### Contributing
-### We welcome contributions! To contribute:
+- Building Gemini API Prompt: Crafting a well-structured prompt to ensure the Gemini API generates accurate and relevant travel recommendations based on user inputs.
+- Location Images: Implementing a photo gallery for each location proved challenging due to the unique nature of each destination.
+### Contributing 
+- We welcome contributions! To contribute:
 
 ### Fork the repository.
-### Create a new branch for your feature or bug fix.
-###  Commit your changes and push them to your fork.
-###  Create a pull request to merge your changes.
-###  License
-###  This project is licensed under the MIT License - see the LICENSE file for details.
+- Create a new branch for your feature or bug fix.
+- Commit your changes and push them to your fork.
+- Create a pull request to merge your changes.
+- License
+- This project is licensed under the MIT License - see the LICENSE file for details.
 
 ###  Contact
-###  For any inquiries or feedback, please reach out to [your-email@example.com].
+- If you have any questions or feedback, please reach out to [your-email@example.com].
 
 
 ###  This README gives a comprehensive overview of the project, its features, installation steps, and h
