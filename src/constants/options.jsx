@@ -75,7 +75,7 @@ Generate a detailed travel plan for:
      - Description
 
 2. **Itinerary**:
-   - Suggest a 3-day itinerary with the following details for each day:
+   - Suggest a itinerary with the following details for each day:
      - Place Name
      - Place Details
      - Place Image URL
