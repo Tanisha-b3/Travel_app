@@ -63,25 +63,64 @@ Generate a detailed travel plan for:
 - **Duration**: {totalDays} days
 - **Number of People**: {people}
 - **Budget**: {budget}
+1. **Hotels**:
+   - Provide more than 4 hotel options.
+   - For each hotel, include the following details:
+     - Hotel Name
+     - Hotel Address
+     - Price
+     - Hotel Image URL
+     - Geo Coordinates
+     - Rating
+     - Description
 
-Requirements:
-1. Provide **more than 4 hotel options** with the following details:
-   - Hotel Name
-   - Hotel Address
-   - Price
-   - Hotel Image URL
-   - Geo Coordinates
-   - Rating
-   - Description
+2. **Itinerary**:
+   - Suggest a 3-day itinerary with the following details for each day:
+     - Place Name
+     - Place Details
+     - Place Image URL
+     - Geo Coordinates
+     - Ticket Pricing
+     - Time to Travel to Each Location
+     - Best Time to Visit
 
-2. Suggest a **3-day itinerary** with the following details for each day:
-   - Place Name
-   - Place Details
-   - Place Image URL
-   - Geo Coordinates
-   - Ticket Pricing
-   - Time to Travel to Each Location
-   - Best Time to Visit
+Output the plan in JSON format, ensuring that all details such as the hotel information, itinerary, and places are provided in the specified structure, similar to this example:
+{
+  "location": ,
+  "duration":,
+  "people": ,
+  "budget": ,
+  "hotels": [
+    {
+      "Hotel Name": ,
+      "Hotel Address": ,
+      "Price": "",
+      "Hotel Image URL": "",
+      "Geo Coordinates": ,
+      "Rating": ,
+      "Description": ""
+    },
+    ...
+  ],
+  "itinerary": [
+    {
+      "Day": "Day 1",
+      "Places": [
+        {
+          "Place Name": ,
+          "Place Details": ,
+          "Place Image URL": ,
+          "Geo Coordinates": ,
+          "Ticket Pricing": ,
+          "Time to Travel": ,
+          "Best Time to Visit": 
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+`
 
-Output the entire plan in **JSON format**.
-`;
+
