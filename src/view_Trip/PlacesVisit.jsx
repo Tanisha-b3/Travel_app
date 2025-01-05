@@ -1,8 +1,9 @@
 import road from "../assets/road.png";
-import "./PlacesToVisit.css"
+import "./PlacesToVisit.css";
 
 const PlacesVisit = ({ tripData }) => {
-  const itinerary = tripData?.tripData?.itinerary?.days; // Access `days` from `itinerary`
+  // Accessing the itinerary data from tripData
+  const itinerary = tripData?.tripData?.itinerary; // Access `itinerary` from `tripData`
 
   console.log("Full tripData received:", tripData);
   console.log("Extracted itinerary:", itinerary);
@@ -11,38 +12,44 @@ const PlacesVisit = ({ tripData }) => {
     <div className="places-visit-container">
       {/* Check if itinerary exists and contains days */}
       {itinerary && Array.isArray(itinerary) && itinerary.length > 0 ? (
-        itinerary.map((dayData, dayIndex) => (
-          <div key={dayIndex} className="day-container">
-            <h2 className="day-title">Day {dayIndex + 1}</h2>
-            <p className="best-time">
-              Best Time to Visit: {dayData.bestTimeToVisit || "No data available"}
-            </p>
+        itinerary.map((dayData, dayIndex) => {
+          console.log(`Day ${dayIndex + 1} data:`, dayData); // Log each day's data
 
-            {/* Check if places exist for the day */}
-            {dayData.places && Array.isArray(dayData.places) && dayData.places.length > 0 ? (
-              dayData.places.map((place, placeIndex) => (
-                <div key={placeIndex} className="place-container">
-                 { <img
-                    src={road}
-                    alt="Default Placeholder"
-                    className="place-image-placeholder"
-                  />} 
-                  <h3 className="place-name">{place.placeName || "Unnamed Place"}</h3>
-                  <p className="place-details">{place.placeDetails || "No details available."}</p>
-                  <p className="time-to-travel">
-                    <strong>Travel Time:</strong> {place.timeToTravel || "Unknown"}
-                  </p>
-                  <p className="ticket-pricing">
-                    <strong>Ticket Price:</strong> {place.ticketPricing || "Not Specified"}
-                  </p>
-                  {/* Always use the 'road' image */}
-                </div>
-              ))
-            ) : (
-              <p className="no-places">No places to visit on this day.</p>
-            )}
-          </div>
-        ))
+          return (
+            <div key={dayIndex} className="day-container">
+              <h2 className="day-title">Day {dayIndex + 1}</h2>
+              
+              {/* Check if bestTimeToVisit exists */}
+              <p className="best-time">
+                Best Time to Visit: {dayData['Best Time to Visit']|| "No data available"}
+              </p>
+
+              {/* Check if Places exist for the day */}
+              {dayData?.Places && Array.isArray(dayData.Places) && dayData.Places.length > 0 ? (
+                dayData.Places.map((place, placeIndex) => (
+                  <div key={placeIndex} className="place-container">
+                    {/* Always use the 'road' image */}
+                    <img
+                      src={road}
+                      alt="Default Placeholder"
+                      className="place-image-placeholder"
+                    />
+                    <h3 className="place-name">{place['Place Name'] || "Unnamed Place"}</h3>
+                    <p className="place-details">{place['Place Details'] || "No details available."}</p>
+                    <p className="time-to-travel">
+                      <strong>Travel Time:</strong> {place['Time to Travel'] || "Unknown"}
+                    </p>
+                    <p className="ticket-pricing">
+                      <strong>Ticket Price:</strong> {place['Ticket Pricing']|| "Not Specified"}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="no-places">No places to visit on this day.</p>
+              )}
+            </div>
+          );
+        })
       ) : (
         <p className="no-itinerary">No itinerary available.</p>
       )}

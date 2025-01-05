@@ -12,8 +12,7 @@ function App() {
         <Routes>
       
         <Route path="/my-trips" element={<ViewTrip/>} />
-
-          <Route path="/" element={<Hero />} />
+ <Route path="/" element={<Hero />} />
         </Routes>
       </ToastProvider>
     </>

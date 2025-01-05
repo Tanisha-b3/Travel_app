@@ -18,16 +18,14 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import MyTrip from "@/components/My_trip/My_trip";
-import { useNavigate } from "react-router-dom";
-
 
 function Header() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const users = JSON.parse(localStorage.getItem('user'));
+  const users = JSON.parse(localStorage.getItem('user')) || null;
 
   useEffect(() => {
-    console.log(users);
+    console.log("User Data:", users);
   }, [users]);
 
   const Login = useGoogleLogin({
@@ -36,7 +34,7 @@ function Header() {
       await GetUserProfile(tokenInfo);
     },
     onError: (error) => {
-      console.log("Google Login Error:", error);
+      console.error("Google Login Error:", error);
       toast.error("Google Login Failed");
     },
     scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
@@ -53,7 +51,7 @@ function Header() {
           }
         }
       );
-      console.log(response.data);
+      console.log("Fetched User Data:", response.data);
       localStorage.setItem('user', JSON.stringify(response.data));
       setOpen(false);
       window.location.reload();
@@ -63,40 +61,59 @@ function Header() {
     }
   };
 
+  // Utility function to get the first letter of the user's email
+  const getEmailFirstLetter = (email) => {
+    if (!email) return 'U'; // Default fallback letter
+    return email.charAt(0).toUpperCase();
+  };
+
+  // Redirect to the Hero page on logo click
+  const handleLogoClick = () => {
+    window.location.href = "/";  // Redirect to the home/hero page
+  };
+
+  // Log out function
+  const handleLogout = () => {
+    googleLogout();
+    localStorage.clear();
+    window.location.href = "/";  // After logging out, redirect to the home/hero page
+  };
+
   return (
     <>
       <div className="flex justify-between px-6 py-4 shadow-lg items-center bg-white">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 cursor-pointer" onClick={handleLogoClick}>
           <img className="h-10" src="/Logo.png" alt="Logo" />
         </div>
 
-        {/* Flex container to center the title */}
-        <div className="flex-1 flex justify-center text-3xl font-bold text-gray-800">
+        <div  onClick={handleLogoClick} className=" cursor-pointer flex-1 flex justify-center text-3xl font-bold text-gray-800">
           Trip-Planner
         </div>
 
         <div className="flex items-center gap-6">
           {users ? (
             <div className="flex items-center gap-4">
-              <Button onClick={<MyTrip/>} variant="outline" className="rounded-full border-gray-300 hover:bg-gray-100">
+              <Button onClick={<MyTrip />} variant="outline" className="rounded-full border-gray-300 hover:bg-gray-100">
                 My Trips
               </Button>
               <Popover>
                 <PopoverTrigger>
-                  <img
-                    src={users?.picture}
-                    alt="User Profile"
-                    className="h--6 w-6 "
-                  />
+                  {users?.picture ? (
+                    <img
+                      src={users?.picture}
+                      alt="User Profile"
+                      className="h-8 w-8 rounded-full"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-8 w-8 bg-blue-500 text-white font-bold text-lg rounded-full">
+                      {getEmailFirstLetter(users?.email)}
+                    </div>
+                  )}
                 </PopoverTrigger>
                 <PopoverContent className="p-4 border border-gray-200 shadow-lg bg-white rounded-md">
                   <h2
                     className="cursor-pointer text-red-600 hover:text-red-800 text-center"
-                    onClick={() => {
-                      googleLogout();
-                      localStorage.clear();
-                      window.location.reload();
-                    }}
+                    onClick={handleLogout} // Log out and redirect to home
                   >
                     Log Out
                   </h2>
@@ -130,9 +147,7 @@ function Header() {
                 <Button
                   disabled={loading}
                   onClick={Login}
-                  className={`w-full mt-6 flex items-center justify-center gap-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm ${
-                    loading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`w-full mt-6 flex items-center justify-center gap-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <FcGoogle className="text-2xl" />
                   {loading ? 'Signing in...' : 'Sign in with Google'}

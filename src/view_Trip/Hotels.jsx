@@ -1,50 +1,36 @@
-import road from "../assets/road.png";
 import { Link } from "react-router-dom";
+import road from '../assets/road.png';
 
 const Hotels = ({ tripData }) => {
-  const hotel = tripData?.tripData?.hotels; // Access hotels from tripData
-
-  console.log("Hotels Data:", hotel); // Log hotels data
+  const hotel = tripData?.tripData?.hotels || []; // Default to empty array if no hotels available
 
   return (
-    <div className="px-8 py-10 bg-gray-100 min-h-screen">
-      <h2 className="font-bold text-3xl text-blue-900 mb-8">Hotel Recommendations</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {hotel && hotel.length > 0 ? (
+    <div className="px-6 py-8 bg-gray-100 min-h-screen">
+      <h2 className="font-semibold text-2xl text-blue-800 mb-6 text-center">Hotel Recommendations</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {hotel.length > 0 ? (
           hotel.map((item, index) => (
             <Link
               key={index}
-              to={`https://serpapi.com/search?engine=google_hotels&q=${item.HotelName}`} // Link to hotel search
-              target="_blank" // Open in a new tab
-              rel="noopener noreferrer" // Security measure
+              to={`https://serpapi.com/search?engine=google_hotels&q=${encodeURIComponent(item["Hotel Name"])}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <div className="transform hover:scale-110 transition-all duration-300 border border-gray-300 rounded-2xl p-6 bg-white shadow-xl hover:shadow-2xl">
+              <div className="transform transition-all duration-200 border border-gray-300 rounded-lg p-4 bg-white shadow-sm hover:shadow-md hover:scale-105">
                 <img
-                  src={road}
-                  alt="Hotel"
-                  className="w-full h-52 object-cover rounded-2xl mb-4"
+                  src={road} // Fallback if no image
+                  alt={item["Hotel Name"]}
+                  className="w-full h-40 object-cover rounded-lg mb-4"
                 />
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-xl text-gray-800">{item.HotelName}</h3>
-                  <p className="text-base text-gray-600 flex items-center">
-                    <span role="img" aria-label="location" className="mr-2 text-lg">
-                      📍
-                    </span>
-                    {item["Hotel address"]}
-                  </p>
-                  <p className="text-base text-gray-700 font-semibold">💰 {item.Price}</p>
-                  <p className="text-base text-yellow-500 flex items-center font-semibold">
-                    <span role="img" aria-label="star" className="mr-2 text-lg">
-                      ⭐
-                    </span>
-                    {item.rating}
-                  </p>
-                </div>
+                <h3 className="font-medium text-lg text-gray-800">{item["Hotel Name"] || "Unnamed Hotel"}</h3>
+                <p className="text-sm text-gray-600">{item["Hotel Address"] || "No address available"}</p>
+                <p className="text-sm text-gray-700 font-semibold">{item["Price"] || "Price not available"}</p>
+                <p className="text-sm text-yellow-500">{item["Rating"] || "No rating"}</p>
               </div>
             </Link>
           ))
         ) : (
-          <p className="text-gray-500">No hotel recommendations available.</p> // Message for no hotels
+          <p className="text-center text-gray-500">No hotel recommendations available.</p>
         )}
       </div>
     </div>

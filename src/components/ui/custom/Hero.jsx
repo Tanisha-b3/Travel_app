@@ -100,7 +100,7 @@ function Hero() {
           </DialogClose>
           <DialogHeader>
             <DialogDescription className="text-center">
-              <img src='/Logo.png' alt='Google login' className='w-45 h-20 mx-auto rounded-full shadow-md' />
+              <img src='/Logo.png' alt='Google login' className='w-60 h-15 mx-auto rounded-full shadow-md' />
               <h2 className="font-extrabold text-2xl mt-6">Sign in with Google</h2>
               <p className="text-gray-500 mt-2 text-sm md:text-base">Sign in with Google authentication securely.</p>
               <Button 
