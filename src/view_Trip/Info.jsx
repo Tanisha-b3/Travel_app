@@ -11,8 +11,8 @@ const Info = ({ tripData }) => {
   }, [tripData]);
 
   const fetchDestinationImage = async (query) => {
-    const API_KEY = 'AIzaSyDd5bDUqkzK7lDg92cO0zOsamrQOTNC_9k'; // Replace with your API key
-    const CX = '275a132bfd8b4426d'; // Replace with your CX
+    const API_KEY = import.meta.env.VITE_Location; // Replace with your API key
+    const CX = import.meta.env.VITE_Location_s; // Replace with your CX
     const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query + " travel destination")}&cx=${CX}&key=${API_KEY}&searchType=image`;
 
     try {

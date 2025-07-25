@@ -42,7 +42,7 @@ const Hotels = ({ tripData }) => {
           
           try {
             const response = await fetch(
-              `https://api.unsplash.com/search/photos?query=${encodeURIComponent(hotelName + " hotel")}&client_id=9nh7S4FHl0pnJ0tjKObRksK3YOSPp5pRR3jeSayKOzw&per_page=1`
+              `https://api.unsplash.com/search/photos?query=${encodeURIComponent(hotelName + " hotel")}&client_id=import.meta.env.VITE_key&per_page=1`
             );
             const data = await response.json();
             if (data.results && data.results.length > 0) {

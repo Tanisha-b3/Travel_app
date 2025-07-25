@@ -32,7 +32,7 @@ const PlacesVisit = ({ tripData }) => {
           if (placeName && !newPlaceImages[placeName]) {
             try {
               const response = await fetch(
-                `https://api.unsplash.com/search/photos?query=${encodeURIComponent(placeName)}&client_id=9nh7S4FHl0pnJ0tjKObRksK3YOSPp5pRR3jeSayKOzw`
+                `https://api.unsplash.com/search/photos?query=${encodeURIComponent(placeName)}&client_id=import.meta.env.VITE_key`
               );
               const data = await response.json();
               if (data.results && data.results.length > 0) {
