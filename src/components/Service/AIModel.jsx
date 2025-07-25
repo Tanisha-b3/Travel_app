@@ -46,3 +46,26 @@ export const chatSession = model.startChat({
   ],
 });
 
+// import OpenAI from "openai";
+
+// const openai = new OpenAI({
+//   apiKey: import.meta.env.VITE_OPENAI_KEY,
+// });
+
+// const response = await openai.chat.completions.create({
+//   model: "gpt-4-turbo", // or "gpt-4o"
+//   response_format: { type: "json_object" },
+//   messages: [
+//     {
+//       role: "system",
+//       content: "You are a helpful travel assistant. Respond in JSON format.",
+//     },
+//     {
+//       role: "user",
+//       content:
+//         "Generate a 3-day cheap budget travel plan for Las Vegas for a couple, including hotels (name, address, price, image URL, coordinates, rating, description) and an itinerary (place name, details, image URL, coordinates, ticket price, travel time).",
+//     },
+//   ],
+// });
+
+// console.log(response.choices[0].message.content);

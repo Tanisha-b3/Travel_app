@@ -1,47 +1,35 @@
+import { useState } from "react";
 import { Button } from "../button";
-import './Header.css';
 import { FcGoogle } from "react-icons/fc";
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
-import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogClose
-} from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
-import MyTrip from "@/components/My_trip/My_trip";
+import MyTrip from "../../ui/trip";
 
 function Header() {
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [showMyTrips, setShowMyTrips] = useState(false);
   const users = JSON.parse(localStorage.getItem('user')) || null;
-
-  useEffect(() => {
-    console.log("User Data:", users);
-  }, [users]);
 
   const Login = useGoogleLogin({
     onSuccess: async (tokenInfo) => {
-      console.log(tokenInfo);
       await GetUserProfile(tokenInfo);
     },
     onError: (error) => {
       console.error("Google Login Error:", error);
-      toast.error("Google Login Failed");
+      toast({
+        title: "Error",
+        description: "Google Login Failed",
+        variant: "destructive",
+      });
     },
     scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
   });
 
   const GetUserProfile = async (tokenInfo) => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,
         {
@@ -51,113 +39,182 @@ function Header() {
           }
         }
       );
-      console.log("Fetched User Data:", response.data);
       localStorage.setItem('user', JSON.stringify(response.data));
-      setOpen(false);
+      toast({
+        title: "Success",
+        description: "Logged in successfully!",
+        variant: "default",
+      });
       window.location.reload();
     } catch (error) {
       console.error("Failed to fetch Google user profile:", error);
-      toast.error("Failed to retrieve user profile");
+      toast({
+        title: "Error",
+        description: "Failed to retrieve user profile",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Utility function to get the first letter of the user's email
   const getEmailFirstLetter = (email) => {
-    if (!email) return 'U'; // Default fallback letter
-    return email.charAt(0).toUpperCase();
+    return email?.charAt(0).toUpperCase() || 'U';
   };
 
-  // Redirect to the Hero page on logo click
   const handleLogoClick = () => {
-    window.location.href = "/";  // Redirect to the home/hero page
+    window.location.href = "/";
   };
 
-  // Log out function
   const handleLogout = () => {
     googleLogout();
     localStorage.clear();
-    window.location.href = "/";  // After logging out, redirect to the home/hero page
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+      variant: "default",
+    });
+    window.location.href = "/";
+  };
+
+  const handleLoginClick = () => {
+    toast({
+      title: "Login",
+      description: (
+        <div className="flex flex-col gap-3 p-2">
+          <p className="text-center text-gray-700">Sign in with Google to continue</p>
+          <Button
+            disabled={loading}
+            onClick={Login}
+            className={`w-full flex items-center justify-center gap-2 text-black ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          >
+            <FcGoogle className="text-lg" />
+            {loading ? 'Signing in...' : 'Sign in with Google'}
+          </Button>
+        </div>
+      ),
+      variant: "default",
+    });
+  };
+
+  const handleMyTripsClick = () => {
+    if (!users) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to view your trips",
+        variant: "destructive",
+      });
+      return;
+    }
+    setShowMyTrips(true);
   };
 
   return (
     <>
-      <div className="flex justify-between px-6 py-4 shadow-lg items-center bg-white">
-        <div className="flex items-center gap-4 cursor-pointer" onClick={handleLogoClick}>
-          <img className="h-10" src="/Logo.png" alt="Logo" />
-        </div>
-
-        <div  onClick={handleLogoClick} className=" cursor-pointer flex-1 flex justify-center text-3xl font-bold text-gray-800">
-          Trip-Planner
-        </div>
-
-        <div className="flex items-center gap-6">
-          {users ? (
-            <div className="flex items-center gap-4">
-              <Button onClick={<MyTrip />} variant="outline" className="rounded-full border-gray-300 hover:bg-gray-100">
-                My Trips
-              </Button>
-              <Popover>
-                <PopoverTrigger>
-                  {users?.picture ? (
-                    <img
-                      src={users?.picture}
-                      alt="User Profile"
-                      className="h-8 w-8 rounded-full"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-8 w-8 bg-blue-500 text-white font-bold text-lg rounded-full">
-                      {getEmailFirstLetter(users?.email)}
-                    </div>
-                  )}
-                </PopoverTrigger>
-                <PopoverContent className="p-4 border border-gray-200 shadow-lg bg-white rounded-md">
-                  <h2
-                    className="cursor-pointer text-red-600 hover:text-red-800 text-center"
-                    onClick={handleLogout} // Log out and redirect to home
-                  >
-                    Log Out
-                  </h2>
-                </PopoverContent>
-              </Popover>
-            </div>
-          ) : (
-            <Button
-              onClick={() => setOpen(true)}
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-2 rounded-lg shadow-md hover:from-indigo-500 hover:to-blue-500 transition-all duration-300"
+      {/* Header with background image */}
+      <header 
+        className="sticky top-0 z-50 w-full bg-cover bg-center"
+        style={{ backgroundImage: "url('/header-bg.jpg')" }}
+      >
+        {/* Semi-transparent overlay */}
+        <div className="bg-black/30 backdrop-blur-sm">
+          <div className="container mx-auto flex items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+            <div 
+              onClick={handleLogoClick}
+              className="flex items-center gap-2 cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
-              Get Started
-            </Button>
-          )}
-        </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="rounded-xl shadow-2xl border border-gray-300 bg-white p-6">
-            <DialogClose asChild>
-              <button className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-gray-300">
-                <span className="sr-only">Close</span>
-                <span className="text-2xl">&times;</span>
-              </button>
-            </DialogClose>
-            <DialogHeader className="text-center">
-              <DialogDescription>
-                <img src="/Logo.png" alt="Google Login" className="mx-auto h-15 rounded-lg shadow-sm w-60" />
-                <h2 className="text-2xl font-bold mt-4 text-gray-800">Sign in with Google</h2>
-                <p className="text-gray-500 mt-2 text-sm">
-                  Securely sign in using Google authentication.
-                </p>
+              <img className="h-10 w-auto " src="/Logo.png" alt="Logo" />
+              </div>
+              <div 
+              onClick={handleLogoClick}
+              className="flex items-center gap-2 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+            >
+              <h1 className="text-xl font-bold text-white sm:text-2xl pr-20">
+                ExploraTrails
+              </h1>
+              </div>
+            
+
+            <div className="flex items-center gap-3 sm:gap-4">
+              {users ? (
+                <>
+                  <Button 
+                    onClick={handleMyTripsClick}
+                    variant="outline" 
+                    className="hidden sm:flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-full border border-white/30 hover:border-white/50 text-black hover:bg-white/10 transition-all"
+                  >
+                    <span>My Trips</span>
+                  </Button>
+                  
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      {users.picture ? (
+                        <img 
+                          src={users.picture} 
+                          alt="Profile" 
+                          className="h-10 w-10 rounded-full border-2 border-white/30 hover:border-white/50 cursor-pointer transition-all object-cover"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-500 text-white font-bold border-2 border-white/30 hover:border-white/50 cursor-pointer transition-all">
+                          {getEmailFirstLetter(users.email)}
+                        </div>
+                      )}
+                    </PopoverTrigger>
+                    <PopoverContent 
+                      align="end" 
+                      className="w-48 p-1 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                    >
+                      <button 
+                        onClick={handleLogout} 
+                        className="w-full px-4 py-2 text-left text-red-500 hover:bg-red-50 rounded-md text-sm font-medium transition-colors"
+                      >
+                        Log Out
+                      </button>
+                    </PopoverContent>
+                  </Popover>
+                </>
+              ) : (
                 <Button
-                  disabled={loading}
-                  onClick={Login}
-                  className={`w-full mt-6 flex items-center justify-center gap-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={handleLoginClick}
+                  className="px-4 py-2 text-sm font-medium rounded-full bg-black text-indigo-600 hover:bg-gray-100 shadow-sm hover:shadow-md transition-all"
                 >
-                  <FcGoogle className="text-2xl" />
-                  {loading ? 'Signing in...' : 'Sign in with Google'}
+                  <span className="hidden sm:inline">Get Started</span>
+                  <span className="sm:hidden">Login</span>
                 </Button>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      </div>
-      <hr className="mt-2 border-gray-200" />
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* My Trips Modal */}
+      {showMyTrips && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
+          onClick={() => setShowMyTrips(false)}
+        />
+      )}
+
+      {showMyTrips && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-200 m-4">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center z-10">
+              <h2 className="text-xl font-bold text-gray-900">My Saved Trips</h2>
+              <button 
+                className="p-1 rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700"
+                onClick={() => setShowMyTrips(false)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(90vh-60px)]">
+              <MyTrip />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
