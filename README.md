@@ -27,9 +27,8 @@ The AI Travel Planner App is a personalized travel planning application built us
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/ai-travel-planner-app.git
-2.
+   ```
 ### cd ai-travel-planner-app 
-3.
 ### npm install
 ###  Usage
 - On the homepage, enter your location, available days for the trip, and your budget.
