@@ -186,17 +186,30 @@ function CreateTrip() {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       const docId = Date.now().toString();
+      const parsedTripData = JSON.parse(tripData);
 
       await setDoc(doc(db, "AITrips", docId), {
         userChoice: formData,
-        tripData: JSON.parse(tripData),
+        tripData: parsedTripData,
         userEmail: user?.email,
         id: docId,
         createdAt: new Date().toISOString(),
         locationDetails: formData.locationDetails
       });
 
-      navigate(`/View-Trip/${docId}`);
+      const savedAt = new Date().toLocaleDateString();
+      const savedTrip = {
+        id: docId,
+        name: formData.locationDetails?.name || formData.destination,
+        destination: formData.destination,
+        savedAt,
+        itinerary: parsedTripData?.itinerary || parsedTripData?.travelPlan?.itinerary || []
+      };
+
+      const existingTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+      localStorage.setItem('savedTrips', JSON.stringify([savedTrip, ...existingTrips]));
+
+      navigate('/my-trips');
     } catch (error) {
       console.error("Failed to save trip:", error);
       toast.error("Failed to save trip data");

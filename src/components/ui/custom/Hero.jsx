@@ -1,74 +1,33 @@
 import { useNavigate } from 'react-router-dom';
-import { FcGoogle } from "react-icons/fc";
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
-import { Button } from "../button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogClose
-} from "@/components/ui/dialog";
-import { useState, useEffect } from 'react';
-import { toast } from '@/hooks/use-toast';
+import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthModal } from './AuthModal';
 import { FiMapPin, FiCalendar, FiDollarSign, FiUsers, FiArrowRight, FiStar, FiGlobe, FiCompass } from 'react-icons/fi';
 import './Hero.css';
 
 function Hero() {
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const users = JSON.parse(localStorage.getItem('user'));
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const destinationsSectionRef = useRef(null);
 
   useEffect(() => {
-    if (users) {
+    // Only redirect after auth check is complete
+    if (!isLoading && user) {
       navigate('/Create-trip');
     }
-  }, [users, navigate]);
-
-  const Login = useGoogleLogin({
-    onSuccess: async (tokenInfo) => {
-      setLoading(true);
-      await GetUserProfile(tokenInfo);
-    },
-    onError: (error) => {
-      console.log("Google Login Error:", error);
-      toast.error("Google Login Failed. Please try again.");
-      setLoading(false);
-    },
-    scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
-  });
-
-  const GetUserProfile = async (tokenInfo) => {
-    try {
-      const response = await axios.get(
-        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenInfo?.access_token}`,
-            Accept: 'application/json'
-          }
-        }
-      );
-      localStorage.setItem('user', JSON.stringify(response.data));
-      setOpen(false);
-      navigate('/Create-trip');
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch Google user profile:", error);
-      toast.error("Unable to retrieve user profile. Try again later.");
-      setLoading(false);
-    }
-  };
+  }, [user, isLoading, navigate]);
 
   const handleGetStartedClick = () => {
-    if (users) {
+    if (user) {
       navigate('/Create-trip');
     } else {
       setOpen(true);
     }
+  };
+
+  const handleExploreDestinations = () => {
+    destinationsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const features = [
@@ -122,7 +81,10 @@ function Hero() {
                 Start Planning Free
                 <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="btn-secondary text-lg px-8 py-4 flex items-center justify-center gap-2">
+              <button
+                onClick={handleExploreDestinations}
+                className="btn-secondary text-lg px-8 py-4 flex items-center justify-center gap-2"
+              >
                 <FiCompass />
                 Explore Destinations
               </button>
@@ -177,7 +139,7 @@ function Hero() {
       </section>
 
       {/* Popular Destinations */}
-      <section className="py-20 bg-slate-50">
+      <section ref={destinationsSectionRef} className="py-20 bg-slate-50">
         <div className="container-app">
           <div className="flex justify-between items-end mb-10">
             <div>
@@ -186,7 +148,10 @@ function Hero() {
               </h2>
               <p className="text-slate-600">Explore trending places loved by travelers</p>
             </div>
-            <button className="hidden md:flex items-center gap-2 text-indigo-600 font-semibold hover:gap-3 transition-all">
+            <button
+              onClick={handleExploreDestinations}
+              className="hidden md:flex items-center gap-2 text-indigo-600 font-semibold hover:gap-3 transition-all"
+            >
               View All <FiArrowRight />
             </button>
           </div>
@@ -195,6 +160,15 @@ function Hero() {
             {destinations.map((dest, index) => (
               <div
                 key={index}
+                onClick={handleGetStartedClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleGetStartedClick();
+                  }
+                }}
                 className="relative group cursor-pointer overflow-hidden rounded-2xl aspect-[3/4]"
               >
                 <img
@@ -233,45 +207,7 @@ function Hero() {
         </div>
       </section>
 
-      {/* Login Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md p-0 overflow-hidden rounded-2xl border-0">
-          <DialogClose asChild>
-            <button className="absolute right-4 top-4 z-10 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
-              <span className="sr-only">Close</span>
-              <span className="text-xl">&times;</span>
-            </button>
-          </DialogClose>
-
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-8 text-center">
-            <div className="w-20 h-20 mx-auto bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
-              <FiCompass className="text-4xl text-indigo-600" />
-            </div>
-            <DialogTitle className="text-2xl font-bold text-white">Welcome to ExploraTrails</DialogTitle>
-            <p className="text-indigo-100 mt-2">Sign in to start planning your adventure</p>
-          </div>
-
-          <DialogHeader className="p-8">
-            <DialogDescription asChild>
-              <div>
-                <Button
-                  disabled={loading}
-                  onClick={Login}
-                  className={`w-full flex items-center justify-center gap-3 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all ${
-                    loading ? 'opacity-60 cursor-not-allowed' : ''
-                  }`}
-                >
-                  <FcGoogle className="text-2xl" />
-                  {loading ? 'Signing in...' : 'Continue with Google'}
-                </Button>
-                <p className="text-center text-sm text-slate-400 mt-4">
-                  By continuing, you agree to our Terms & Privacy Policy
-                </p>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <AuthModal isOpen={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

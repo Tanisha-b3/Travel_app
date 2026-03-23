@@ -1,135 +1,124 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiMapPin, FiCalendar, FiTrash2, FiArrowRight, FiMap } from "react-icons/fi";
 
 const MyTrip = () => {
-  const [savedTrips, setSavedTrips] = useState([]);
+const [savedTrips, setSavedTrips] = useState([]);
+const navigate = useNavigate();
 
-  useEffect(() => {
-    const trips = JSON.parse(localStorage.getItem('savedTrips')) || [];
-    setSavedTrips(trips);
-  }, []);
+useEffect(() => {
+try {
+const trips = JSON.parse(localStorage.getItem("savedTrips")) || [];
+setSavedTrips(trips);
+} catch (err) {
+console.error("Error parsing trips:", err);
+setSavedTrips([]);
+}
+}, []);
 
-  const handleDeleteTrip = (id) => {
-    const updatedTrips = savedTrips.filter(trip => trip.id !== id);
-    setSavedTrips(updatedTrips);
-    localStorage.setItem('savedTrips', JSON.stringify(updatedTrips));
-  };
+const handleDeleteTrip = (id) => {
+const confirmDelete = window.confirm("Are you sure you want to delete this trip?");
+if (!confirmDelete) return;
 
-  if (savedTrips.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
-        <div className="max-w-md space-y-4">
-          <h3 className="text-2xl font-bold text-gray-800">No Saved Trips</h3>
-          <p className="text-gray-600">
-            Your saved trips will appear here when you create them.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">My Saved Trips</h2>
-      
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {savedTrips.map(trip => (
-          <div 
-            key={trip.id} 
-            className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300"
-          >
-            <div className="p-5">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-gray-800 truncate max-w-[70%]">
-                  {trip.name}
-                </h3>
-                <button 
-                  onClick={() => handleDeleteTrip(trip.id)}
-                  className="px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm font-medium hover:bg-red-100 transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
-              
-              <div className="flex flex-col space-y-2 text-sm text-gray-600 mb-4">
-                <span className="flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {trip.destination}
-                </span>
-                <span className="flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Saved: {trip.savedAt}
-                </span>
-              </div>
-              
-              <div className="border-t border-gray-100 pt-4">
-                <h4 className="font-medium text-gray-700 mb-3">Itinerary:</h4>
-                <div className="space-y-4">
-                  {trip.itinerary.map((day, dayIndex) => (
-                    <div key={dayIndex} className="bg-gray-50 rounded-lg p-3">
-                      <h5 className="font-medium text-blue-600 mb-2">
-                        Day {dayIndex + 1}
-                      </h5>
-                      {day.Places?.length > 0 ? (
-                        <div className="space-y-3">
-                          {day.Places.map((place, placeIndex) => (
-                            <div key={placeIndex} className="text-sm">
-                              <p className="font-medium text-gray-800">
-                                {place['Place Name'] || "Unnamed Place"}
-                              </p>
-                              {place['Place Details'] && (
-                                <p className="text-gray-600 mt-1 line-clamp-2">
-                                  {place['Place Details']}
-                                </p>
-                              )}
-                              <div className="mt-2 space-y-1 text-xs text-gray-500">
-                                {place['Best Time to Visit'] && (
-                                  <p className="flex items-center">
-                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Best time: {place['Best Time to Visit']}
-                                  </p>
-                                )}
-                                {place['Time to Travel'] && (
-                                  <p className="flex items-center">
-                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Travel time: {place['Time to Travel']}
-                                  </p>
-                                )}
-                                {place['Ticket Pricing'] && (
-                                  <p className="flex items-center">
-                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Price: {place['Ticket Pricing']}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-xs text-gray-500 italic">
-                          No places planned for this day
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+const updatedTrips = savedTrips.filter((trip) => trip.id !== id);
+setSavedTrips(updatedTrips);
+localStorage.setItem("savedTrips", JSON.stringify(updatedTrips));
+
+
+};
+
+const getGradientClass = (index) => {
+const gradients = [
+"from-blue-500 to-purple-600",
+"from-purple-500 to-pink-600",
+"from-orange-500 to-red-600",
+"from-green-500 to-teal-600",
+"from-indigo-500 to-blue-600",
+"from-rose-500 to-orange-600",
+];
+return gradients[index % gradients.length];
+};
+
+const countPlaces = (itinerary = []) => {
+return itinerary.reduce((total, day) => total + (day?.Places?.length || 0), 0);
+};
+
+if (!savedTrips.length) {
+return ( <div className="min-h-[60vh] flex flex-col items-center justify-center p-6"> <FiMap className="w-16 h-16 text-indigo-400 opacity-50 mb-4" /> <h3 className="text-3xl font-bold mb-2">No Trips Yet</h3> <p className="text-slate-600 text-center">
+Start planning your first trip and it will appear here ✈️ </p> </div>
+);
+}
+
+return ( <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 py-12"> <div className="container-app px-4">
+    {/* Header */}
+    <div className="mb-10">
+      <h1 className="text-4xl font-bold flex items-center gap-2">
+        <FiMap className="text-indigo-600" />
+        My Trips
+      </h1>
+      <p className="text-slate-600 mt-1">
+        {savedTrips.length} trip{savedTrips.length > 1 && "s"} saved
+      </p>
     </div>
-  );
+
+    {/* Grid */}
+    <div className="flex gap-6 overflow-x-auto pb-4">
+      {savedTrips.map((trip, index) => (
+        <div
+          key={trip.id}
+          className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition w-80 flex-shrink-0"
+        >
+          
+          {/* Header */}
+          <div className={`h-24 bg-gradient-to-br ${getGradientClass(index)} rounded-t-2xl`} />
+
+          <div className="p-5">
+            
+            {/* Title */}
+            <h3 className="text-lg font-bold mb-1">{trip.name}</h3>
+
+            {/* Info */}
+            <div className="flex justify-between text-sm text-slate-600 mb-4">
+              <span className="flex items-center gap-1">
+                <FiMapPin /> {trip.destination}
+              </span>
+              <span className="flex items-center gap-1">
+                <FiCalendar /> {trip.itinerary?.length || 0}d
+              </span>
+            </div>
+
+            {/* Stats */}
+            <p className="text-sm text-slate-500 mb-4">
+              {countPlaces(trip.itinerary)} places • {trip.savedAt}
+            </p>
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => navigate(`/view-trip/${trip.id}`)}
+                className="flex-1 bg-indigo-600 text-white py-2 rounded-lg flex items-center justify-center gap-1"
+              >
+                View <FiArrowRight />
+              </button>
+
+              <button
+                onClick={() => handleDeleteTrip(trip.id)}
+                className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg flex items-center justify-center gap-1"
+              >
+                <FiTrash2 /> Delete
+              </button>
+            </div>
+
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+
+);
 };
 
 export default MyTrip;

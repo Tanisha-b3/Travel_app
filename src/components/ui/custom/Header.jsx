@@ -76,13 +76,13 @@ function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-             {user && ( <a
+             {/* {user && ( <a
                 href="/"
                 className="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
               >
                 Home
               </a>
-             )}
+             )} */}
               {user && (
                 <a
                   href="/Create-trip"
@@ -182,13 +182,13 @@ function Header() {
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t border-slate-100 animate-fade-in">
               <nav className="flex flex-col gap-2">
-                <a
+                {/* <a
                   href="/"
                   className="px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Home
-                </a>
+                </a> */}
                 <a
                   href="/Create-trip"
                   className="px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors"

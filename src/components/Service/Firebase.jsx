@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";  // Correct import for Firestore
 
 const firebaseConfig = {
-  apiKey: "AIzaSyChwEu5PVDtn9FZWenmkIbJj71GWPfGUiM",
-  authDomain: "tripgenerator-18bf3.firebaseapp.com",
-  projectId: "tripgenerator-18bf3",
-  storageBucket: "tripgenerator-18bf3.appspot.com",
-  messagingSenderId: "620849457540",
-  appId: "1:620849457540:web:c8abff464d314577b715d1",
-  measurementId: "G-THMJQ9CW2T"
+  apiKey: import.meta.env.VITE_apiKey,
+  authDomain: import.meta.env.VITE_authDomain,
+  projectId: import.meta.env.VITE_projectId,
+  storageBucket: import.meta.env.VITE_storageBucket,
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId,
+  measurementId: import.meta.env.VITE_measurementId
 };
 
 // Initialize Firebase
