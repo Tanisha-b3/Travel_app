@@ -25,7 +25,7 @@ const PlacesVisit = ({ tripData }) => {
           if (placeName && !newPlaceImages[placeName]) {
             try {
               const response = await fetch(
-                `https://api.unsplash.com/search/photos?query=${encodeURIComponent(placeName)}&client_id=9nh7S4FHl0pnJ0tjKObRksK3YOSPp5pRR3jeSayKOzw&per_page=1`
+                `https://api.unsplash.com/search/photos?query=${encodeURIComponent(placeName)}&client_id=${import.meta.env.VITE_KEY}&per_page=1`
               );
               const data = await response.json();
               if (data.results && data.results.length > 0) {
@@ -210,10 +210,10 @@ const PlacesVisit = ({ tripData }) => {
 
                                   {/* Meta Info */}
                                   <div className="flex flex-wrap gap-3 mt-3">
-                                    {place['Time To Travel'] && (
+                                    {(place['Time To Travel'] || place['Time to Travel']) && (
                                       <span className="badge badge-primary">
                                         <FiClock size={12} />
-                                        {place['Time To Travel']}
+                                        {place['Time To Travel'] || place['Time to Travel']}
                                       </span>
                                     )}
                                     {place['Ticket Pricing'] && (
@@ -222,10 +222,10 @@ const PlacesVisit = ({ tripData }) => {
                                         {place['Ticket Pricing']}
                                       </span>
                                     )}
-                                    {place['Best Time To Visit'] && (
+                                    {(place['Best Time To Visit'] || place['Best Time to Visit']) && (
                                       <span className="badge badge-warning">
                                         <FiMapPin size={12} />
-                                        {place['Best Time To Visit']}
+                                        {place['Best Time To Visit'] || place['Best Time to Visit']}
                                       </span>
                                     )}
                                   </div>

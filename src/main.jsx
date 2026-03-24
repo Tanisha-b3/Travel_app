@@ -10,7 +10,7 @@ import Header from './components/ui/custom/Header.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_Auth_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_AUTH_CLIENT_ID}>
       <AuthProvider>
         <BrowserRouter>
           <Header />

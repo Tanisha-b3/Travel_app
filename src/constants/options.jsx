@@ -87,39 +87,36 @@ Generate a detailed travel plan for:
 
 Output the plan in JSON format, ensuring that all details such as the hotel information, itinerary, and places are provided in the specified structure, similar to this example:
 {
-  "location": ,
-  "duration":,
-  "people": ,
-  "budget": ,
+  "location": "destination name",
+  "duration": "X days",
+  "people": "number of people",
+  "budget": "budget type",
   "hotels": [
     {
-      "Hotel Name": ,
-      "Hotel Address": ,
-      "Price": "",
-      "Hotel Image URL": "",
-      "Geo Coordinates": ,
-      "Rating": ,
-      "Description": ""
-    },
-    ...
+      "Hotel Name": "hotel name",
+      "Hotel Address": "address",
+      "Price": "price per night",
+      "Hotel Image URL": "valid image url",
+      "Geo Coordinates": {"lat": 0, "lng": 0},
+      "Rating": 4.5,
+      "Description": "hotel description"
+    }
   ],
   "itinerary": [
     {
       "Day": "Day 1",
       "Places": [
         {
-          "Place Name": ,
-          "Place Details": ,
-          "Place Image URL": ,
-          "Geo Coordinates": ,
-          "Ticket Pricing": ,
-          "Time to Travel": ,
-          "Best Time to Visit": 
-        },
-        ...
+          "Place Name": "place name",
+          "Place Details": "place description",
+          "Place Image URL": "valid image url",
+          "Geo Coordinates": {"lat": 0, "lng": 0},
+          "Ticket Pricing": "price or free",
+          "Time to Travel": "travel time",
+          "Best Time to Visit": "best time"
+        }
       ]
-    },
-    ...
+    }
   ]
 }
 `

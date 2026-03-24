@@ -17,7 +17,7 @@ const Info = ({ tripData }) => {
     try {
       // Try Unsplash first
       const response = await fetch(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query + " travel landscape")}&client_id=9nh7S4FHl0pnJ0tjKObRksK3YOSPp5pRR3jeSayKOzw&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query + " travel landscape")}&client_id=${import.meta.env.VITE_KEY}&per_page=1&orientation=landscape`
       );
       const data = await response.json();
       if (data.results && data.results[0]) {

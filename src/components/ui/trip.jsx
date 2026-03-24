@@ -96,7 +96,7 @@ return ( <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-
             {/* Actions */}
             <div className="flex gap-2">
               <button
-                onClick={() => navigate(`/view-trip/${trip.id}`)}
+                onClick={() => navigate(`/View-Trip/${trip.id}`)}
                 className="flex-1 bg-indigo-600 text-white py-2 rounded-lg flex items-center justify-center gap-1"
               >
                 View <FiArrowRight />

@@ -173,10 +173,17 @@ function CreateTrip() {
 
       const result = await sendTripPrompt(finalPrompt);
       const tripData = await result.response.text();
+
+      if (!tripData || tripData.trim().length === 0) {
+        toast.error("Empty response from AI. Please try again.");
+        return;
+      }
+
       await saveTrip(tripData);
     } catch (error) {
       console.error("Trip generation error:", error);
-      toast.error("Failed to generate trip. Please try again.");
+      const errorMsg = error.message || "Failed to generate trip. Please try again.";
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -186,7 +193,23 @@ function CreateTrip() {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       const docId = Date.now().toString();
-      const parsedTripData = JSON.parse(tripData);
+
+      let parsedTripData;
+      try {
+        parsedTripData = JSON.parse(tripData);
+      } catch (parseError) {
+        console.error("JSON Parse Error:", parseError);
+        console.error("Raw response:", tripData);
+        toast.error("Failed to parse trip data. Please try again.");
+        return;
+      }
+
+      // Validate required fields
+      if (!parsedTripData.hotels || !parsedTripData.itinerary) {
+        console.error("Missing required fields in response:", parsedTripData);
+        toast.error("Incomplete trip data received. Please try again.");
+        return;
+      }
 
       await setDoc(doc(db, "AITrips", docId), {
         userChoice: formData,

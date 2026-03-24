@@ -23,17 +23,24 @@ export const sendTripPrompt = async (prompt) => {
       },
       {
         role: "user",
-        content: prompt + "\n\nRespond with valid JSON only using the exact key names specified.",
+        content: prompt + "\n\nRespond with ONLY valid JSON, no markdown formatting. Start directly with { and end with }",
       },
     ],
     temperature: 1,
     max_tokens: 8192,
-    response_format: { type: "json_object" },
   });
+
+  const rawContent = response.choices[0].message.content;
+
+  // Clean up markdown formatting if present
+  const cleanContent = rawContent
+    .replace(/```json\n?/g, '')
+    .replace(/```\n?/g, '')
+    .trim();
 
   return {
     response: {
-      text: () => response.choices[0].message.content,
+      text: () => cleanContent,
     },
   };
 };
