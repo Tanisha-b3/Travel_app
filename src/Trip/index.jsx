@@ -4,7 +4,6 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { toast, ToastContainer } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
 import axios from 'axios';
-import { doc, setDoc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +15,6 @@ import {
 
 import { AI_PROMPT, Budget, SelectTravelList } from '@/constants/options';
 import { sendTripPrompt } from '@/components/Service/AIModel';
-import { db } from '@/components/Service/Firebase';
 
 import { FiMapPin, FiCalendar, FiDollarSign, FiUsers, FiArrowRight, FiLoader, FiSearch, FiCompass } from 'react-icons/fi';
 import "react-toastify/dist/ReactToastify.css";
@@ -179,21 +177,7 @@ function CreateTrip() {
         return;
       }
 
-      await saveTrip(tripData);
-    } catch (error) {
-      console.error("Trip generation error:", error);
-      const errorMsg = error.message || "Failed to generate trip. Please try again.";
-      toast.error(errorMsg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const saveTrip = async (tripData) => {
-    try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const docId = Date.now().toString();
-
+      // Parse and validate trip data before navigating
       let parsedTripData;
       try {
         parsedTripData = JSON.parse(tripData);
@@ -204,38 +188,32 @@ function CreateTrip() {
         return;
       }
 
-      // Validate required fields
       if (!parsedTripData.hotels || !parsedTripData.itinerary) {
         console.error("Missing required fields in response:", parsedTripData);
         toast.error("Incomplete trip data received. Please try again.");
         return;
       }
 
-      await setDoc(doc(db, "AITrips", docId), {
-        userChoice: formData,
-        tripData: parsedTripData,
-        userEmail: user?.email,
-        id: docId,
-        createdAt: new Date().toISOString(),
-        locationDetails: formData.locationDetails
+      // Navigate to view page with unsaved trip data
+      const tempId = Date.now().toString();
+      navigate(`/View-Trip/${tempId}`, {
+        state: {
+          unsaved: true,
+          tripData: {
+            userChoice: formData,
+            tripData: parsedTripData,
+            userEmail: JSON.parse(localStorage.getItem('user'))?.email,
+            id: tempId,
+            locationDetails: formData.locationDetails
+          }
+        }
       });
-
-      const savedAt = new Date().toLocaleDateString();
-      const savedTrip = {
-        id: docId,
-        name: formData.locationDetails?.name || formData.destination,
-        destination: formData.destination,
-        savedAt,
-        itinerary: parsedTripData?.itinerary || parsedTripData?.travelPlan?.itinerary || []
-      };
-
-      const existingTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
-      localStorage.setItem('savedTrips', JSON.stringify([savedTrip, ...existingTrips]));
-
-      navigate('/my-trips');
     } catch (error) {
-      console.error("Failed to save trip:", error);
-      toast.error("Failed to save trip data");
+      console.error("Trip generation error:", error);
+      const errorMsg = error.message || "Failed to generate trip. Please try again.";
+      toast.error(errorMsg);
+    } finally {
+      setIsLoading(false);
     }
   };
 

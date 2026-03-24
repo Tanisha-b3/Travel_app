@@ -19,7 +19,11 @@ function Header() {
   };
 
   const handleLogoClick = () => {
-    window.location.href = '/';
+    if (user) {
+      window.location.href = '/Create-trip';
+    } else {
+      window.location.href = '/';
+    }
   };
 
   const handleLogout = async () => {
