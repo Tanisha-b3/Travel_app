@@ -123,6 +123,8 @@ router.post('/google', async (req, res) => {
   try {
     const { googleId, email, name, picture } = req.body;
 
+    console.log('Google auth data received:', { googleId, email, name });
+
     if (!googleId || !email) {
       return res.status(400).json({
         success: false,
